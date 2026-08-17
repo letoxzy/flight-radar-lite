@@ -1,0 +1,408 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+  background: #071016;
+  color: #e8f0f3;
+}
+
+.topbar {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: #081218;
+  border-bottom: 1px solid #1d2a30;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #34444c;
+  border-radius: 8px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.brand span {
+  color: #75868f;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9db0b8;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #42d392;
+  box-shadow: 0 0 10px rgba(66, 211, 146, 0.7);
+}
+
+.dashboard {
+  height: calc(100vh - 72px);
+  display: grid;
+  grid-template-columns: 360px 1fr;
+}
+
+.sidebar {
+  position: relative;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: #091319;
+  border-right: 1px solid #1d2a30;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 26px 24px 18px;
+  border-bottom: 1px solid #1d2a30;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #72848c;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.sidebar-header h2,
+.map-overlay h2 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -0.5px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 18px 24px;
+}
+
+.stat-card {
+  padding: 15px;
+  background: #0d1a21;
+  border: 1px solid #1c2b32;
+  border-radius: 8px;
+}
+
+.stat-card span {
+  display: block;
+  color: #71838c;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 22px;
+}
+
+.aircraft-list {
+  padding: 4px 16px 16px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px;
+  color: #71838c;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.aircraft-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 10px;
+  margin-bottom: 6px;
+  color: #dce6ea;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.aircraft-card:hover,
+.aircraft-card.active {
+  background: #102027;
+  border-color: #263a43;
+}
+
+.aircraft-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #9bb0b8;
+  background: #16252c;
+  border-radius: 7px;
+}
+
+.aircraft-info {
+  flex: 1;
+}
+
+.aircraft-info strong {
+  display: block;
+  font-size: 13px;
+}
+
+.aircraft-info span {
+  display: block;
+  margin-top: 4px;
+  color: #71838c;
+  font-size: 10px;
+}
+
+.details-panel {
+  margin: 0 24px 20px;
+  padding: 18px;
+  background: #0d1a21;
+  border: 1px solid #26373f;
+  border-radius: 9px;
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.details-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.close-details {
+  border: 0;
+  background: transparent;
+  color: #7e929b;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.detail-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-grid svg {
+  color: #7f949d;
+}
+
+.detail-grid span {
+  color: #71838c;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.detail-grid strong {
+  font-size: 11px;
+}
+
+.footer-info {
+  margin-top: auto;
+  padding: 20px 24px;
+  border-top: 1px solid #1d2a30;
+}
+
+.footer-info span {
+  display: block;
+  color: #62747d;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+}
+
+.footer-info strong {
+  display: block;
+  margin-top: 5px;
+  color: #9eafb6;
+  font-size: 11px;
+}
+
+.map-section {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.flight-map {
+  width: 100%;
+  height: 100%;
+  background: #101a1f;
+}
+
+.map-overlay {
+  position: absolute;
+  z-index: 500;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.map-overlay h2 {
+  font-size: 19px;
+}
+
+.map-time {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  color: #d0dadd;
+  background: rgba(7, 16, 22, 0.88);
+  border: 1px solid #273840;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.map-legend {
+  position: absolute;
+  z-index: 500;
+  bottom: 22px;
+  right: 22px;
+  display: flex;
+  gap: 15px;
+  padding: 10px 13px;
+  background: rgba(7, 16, 22, 0.9);
+  border: 1px solid #273840;
+  border-radius: 7px;
+  color: #9badb5;
+  font-size: 9px;
+}
+
+.map-legend div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-plane {
+  font-size: 14px;
+}
+
+.legend-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #42d392;
+}
+
+.plane-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.plane-marker-inner {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-size: 22px;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  transition: transform 0.2s ease;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #0b171d;
+  color: #dce7ea;
+}
+
+.leaflet-popup-content {
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .dashboard {
+    height: auto;
+    min-height: calc(100vh - 72px);
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid #1d2a30;
+  }
+
+  .map-section {
+    height: 65vh;
+    min-height: 450px;
+  }
+
+  .footer-info {
+    display: none;
+  }
+
+  .status {
+    display: none;
+  }
+}
