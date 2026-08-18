@@ -3,7 +3,8 @@ import { parseAircraftStates } from "../utils/parseAircraft";
 
 // Set VITE_API_URL in .env.local (dev) or your host's env settings
 // (prod) to point at wherever the backend is deployed, e.g. Render.
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL =
+  import.meta.env.VITE_API_URL || "";
 
 const POLL_INTERVAL_MS = 15000;
 const STALE_AFTER_MS = POLL_INTERVAL_MS * 2;
