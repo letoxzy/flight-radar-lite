@@ -1,3 +1,7 @@
+import dns from "node:dns";
+
+dns.setDefaultResultOrder("ipv4first");
+
 let cachedData = null;
 let cachedAt = 0;
 
