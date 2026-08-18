@@ -33,11 +33,16 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
-const WORLD_CENTER = [20, 0];
-const WORLD_BOUNDS = [
-  [-90, -180],
-  [90, 180],
+// Japan airspace — matches the bounding box the backend queries
+// OpenSky with. Swap both to point the radar elsewhere.
+const REGION_NAME = "Japan";
+const REGION_CENTER = [36.5, 138];
+const REGION_BOUNDS = [
+  [22, 120],
+  [47.5, 156],
 ];
+const DEFAULT_ZOOM = 5;
+const MIN_ZOOM = 5;
 
 function createPlaneIcon(heading) {
   return L.divIcon({
@@ -107,7 +112,7 @@ function App() {
           <div className="sidebar-header">
             <div>
               <p className="eyebrow">AIRSPACE MONITOR</p>
-              <h2>World</h2>
+              <h2>{REGION_NAME}</h2>
             </div>
 
             <Radio size={22} />
@@ -121,7 +126,7 @@ function App() {
 
             <div className="stat-card">
               <span>Coverage</span>
-              <strong>GLOBAL</strong>
+              <strong>JAPAN</strong>
             </div>
           </div>
 
@@ -239,7 +244,7 @@ function App() {
           <div className="map-overlay">
             <div>
               <p className="eyebrow">LIVE AIRSPACE</p>
-              <h2>Global Airspace</h2>
+              <h2>{REGION_NAME} Airspace</h2>
             </div>
 
             <div className={`map-time map-time-${statusClass}`}>
@@ -249,13 +254,12 @@ function App() {
           </div>
 
           <MapContainer
-            center={WORLD_CENTER}
-            zoom={2}
-            minZoom={2}
+            center={REGION_CENTER}
+            zoom={DEFAULT_ZOOM}
+            minZoom={MIN_ZOOM}
             maxZoom={12}
-            maxBounds={WORLD_BOUNDS}
+            maxBounds={REGION_BOUNDS}
             maxBoundsViscosity={1.0}
-            worldCopyJump={true}
             className="flight-map"
           >
             <TileLayer

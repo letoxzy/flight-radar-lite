@@ -5,6 +5,7 @@
 
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   background: #071016;
   color: #e8f0f3;
 }
@@ -111,6 +112,7 @@
 
 .dashboard {
   height: calc(100vh - 72px);
+  height: calc(100dvh - 72px);
   display: grid;
   grid-template-columns: 360px 1fr;
 }
@@ -260,11 +262,23 @@
 }
 
 .close-details {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
   border: 0;
+  border-radius: 6px;
   background: transparent;
   color: #7e929b;
   font-size: 22px;
+  line-height: 1;
   cursor: pointer;
+}
+
+.close-details:hover {
+  background: #16252c;
+  color: #dce6ea;
 }
 
 .detail-grid {

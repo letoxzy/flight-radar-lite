@@ -9,6 +9,18 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
+// Bounding box for the airspace we track. Swap these four numbers
+// (or the env vars) to point the radar at a different country —
+// Nigeria's airspace is too quiet on OpenSky for a good live demo,
+// so this defaults to Japan, which reliably has heavy traffic
+// around Haneda, Narita, Kansai, etc.
+const BBOX = {
+  lamin: Number(process.env.BBOX_LAMIN ?? 24),
+  lomin: Number(process.env.BBOX_LOMIN ?? 122),
+  lamax: Number(process.env.BBOX_LAMAX ?? 46),
+  lomax: Number(process.env.BBOX_LOMAX ?? 154),
+};
+
 let accessToken = null;
 let tokenExpiresAt = 0;
 
@@ -64,10 +76,15 @@ app.get("/api/aircraft", async (req, res) => {
 
     const token = await getAccessToken();
 
-    // No lamin/lomin/lamax/lomax params => worldwide coverage
-    // (this used to be scoped to Nigeria's airspace only).
+    const params = new URLSearchParams({
+      lamin: BBOX.lamin,
+      lomin: BBOX.lomin,
+      lamax: BBOX.lamax,
+      lomax: BBOX.lomax,
+    });
+
     const response = await fetch(
-      "https://opensky-network.org/api/states/all",
+      `https://opensky-network.org/api/states/all?${params.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -111,6 +128,8 @@ app.get("/api/aircraft", async (req, res) => {
 app.get("/", (req, res) => {
   res.json({
     message: "Flight Radar API is running",
+    region: "Japan",
+    bbox: BBOX,
   });
 });
 
