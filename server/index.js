@@ -12,6 +12,14 @@ const PORT = process.env.PORT || 3001;
 let accessToken = null;
 let tokenExpiresAt = 0;
 
+// Simple in-memory cache. The worldwide feed is heavy and OpenSky
+// rate-limits authenticated requests to roughly one call every ~5s,
+// so if the frontend polls faster than that (or two tabs are open)
+// we just serve the last good response instead of hitting the API.
+let cachedData = null;
+let cachedAt = 0;
+const CACHE_TTL_MS = 8000;
+
 async function getAccessToken() {
   if (accessToken && Date.now() < tokenExpiresAt) {
     return accessToken;
@@ -49,10 +57,17 @@ async function getAccessToken() {
 
 app.get("/api/aircraft", async (req, res) => {
   try {
+    // Serve from cache if it's still fresh.
+    if (cachedData && Date.now() - cachedAt < CACHE_TTL_MS) {
+      return res.json(cachedData);
+    }
+
     const token = await getAccessToken();
 
+    // No lamin/lomin/lamax/lomax params => worldwide coverage
+    // (this used to be scoped to Nigeria's airspace only).
     const response = await fetch(
-      "https://opensky-network.org/api/states/all?lamin=3.5&lomin=2.5&lamax=14.5&lomax=15.5",
+      "https://opensky-network.org/api/states/all",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -63,6 +78,12 @@ app.get("/api/aircraft", async (req, res) => {
     if (!response.ok) {
       const errorText = await response.text();
 
+      // If OpenSky is rate-limiting/erroring but we have a recent
+      // cached response, serve that instead of failing the client.
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+
       return res.status(response.status).json({
         error: errorText,
       });
@@ -70,14 +91,21 @@ app.get("/api/aircraft", async (req, res) => {
 
     const data = await response.json();
 
+    cachedData = data;
+    cachedAt = Date.now();
+
     res.json(data);
   } catch (error) {
-  console.error("OpenSky error:", error);
+    console.error("OpenSky error:", error);
 
-  res.status(500).json({
-    error: error.message,
-  });
-}
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    res.status(500).json({
+      error: error.message,
+    });
+  }
 });
 
 app.get("/", (req, res) => {

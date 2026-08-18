@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Plane,
   Radio,
@@ -7,6 +7,7 @@ import {
   ArrowUp,
   Clock3,
   Activity,
+  AlertTriangle,
 } from "lucide-react";
 import {
   MapContainer,
@@ -18,6 +19,7 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
+import { useAircraft } from "./hooks/useAircraft";
 
 // Fix Leaflet marker icons when using Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -31,8 +33,11 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
-
-const nigeriaCenter = [9.082, 8.6753];
+const WORLD_CENTER = [20, 0];
+const WORLD_BOUNDS = [
+  [-90, -180],
+  [90, 180],
+];
 
 function createPlaneIcon(heading) {
   return L.divIcon({
@@ -64,13 +69,18 @@ function MapController({ selectedAircraft }) {
 }
 
 function App() {
-  const [aircraft, setAircraft] = useState([]);
+  const { aircraft, loading, error, isStale, secondsAgo } = useAircraft();
   const [selectedAircraft, setSelectedAircraft] = useState(null);
 
-  useEffect(() => {
-  // We will connect this to our backend API next.
-  setAircraft([]);
-  }, []);
+  const statusLabel = error
+    ? "OFFLINE"
+    : isStale
+    ? "STALE"
+    : loading
+    ? "CONNECTING"
+    : "LIVE TRACKING";
+
+  const statusClass = error ? "error" : isStale ? "stale" : "live";
 
   return (
     <div className="app">
@@ -86,9 +96,9 @@ function App() {
           </div>
         </div>
 
-        <div className="status">
+        <div className={`status status-${statusClass}`}>
           <span className="status-dot"></span>
-          LIVE TRACKING
+          {statusLabel}
         </div>
       </header>
 
@@ -97,7 +107,7 @@ function App() {
           <div className="sidebar-header">
             <div>
               <p className="eyebrow">AIRSPACE MONITOR</p>
-              <h2>Nigeria</h2>
+              <h2>World</h2>
             </div>
 
             <Radio size={22} />
@@ -111,15 +121,40 @@ function App() {
 
             <div className="stat-card">
               <span>Coverage</span>
-              <strong>NG</strong>
+              <strong>GLOBAL</strong>
             </div>
           </div>
+
+          {error && (
+            <div className="banner banner-error">
+              <AlertTriangle size={15} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {!error && isStale && (
+            <div className="banner banner-stale">
+              <AlertTriangle size={15} />
+              <span>
+                Data hasn't refreshed in {secondsAgo}s — still showing the
+                last known positions.
+              </span>
+            </div>
+          )}
 
           <div className="aircraft-list">
             <div className="section-heading">
               <span>ACTIVE FLIGHTS</span>
               <Activity size={16} />
             </div>
+
+            {loading && aircraft.length === 0 && (
+              <p className="list-placeholder">Loading live flights…</p>
+            )}
+
+            {!loading && !error && aircraft.length === 0 && (
+              <p className="list-placeholder">No aircraft in range right now.</p>
+            )}
 
             {aircraft.map((plane) => (
               <button
@@ -204,24 +239,23 @@ function App() {
           <div className="map-overlay">
             <div>
               <p className="eyebrow">LIVE AIRSPACE</p>
-              <h2>Nigerian Airspace</h2>
+              <h2>Global Airspace</h2>
             </div>
 
-            <div className="map-time">
+            <div className={`map-time map-time-${statusClass}`}>
               <span className="status-dot"></span>
-              LIVE
+              {secondsAgo === null ? "—" : `${secondsAgo}s ago`}
             </div>
           </div>
 
           <MapContainer
-            center={nigeriaCenter}
-            zoom={6}
-            minZoom={5}
+            center={WORLD_CENTER}
+            zoom={2}
+            minZoom={2}
             maxZoom={12}
-            maxBounds={[
-              [3.5, 2.5],
-              [14.5, 15.5],
-            ]}
+            maxBounds={WORLD_BOUNDS}
+            maxBoundsViscosity={1.0}
+            worldCopyJump={true}
             className="flight-map"
           >
             <TileLayer
@@ -257,8 +291,8 @@ function App() {
               Aircraft
             </div>
             <div>
-              <span className="legend-live"></span>
-              Live data
+              <span className={`legend-live legend-live-${statusClass}`}></span>
+              {error ? "Offline" : isStale ? "Stale" : "Live data"}
             </div>
           </div>
         </section>
