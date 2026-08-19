@@ -80,6 +80,52 @@ app.get("/api/aircraft", async (req, res) => {
   }
 });
 
+app.get("/api/test-opensky", async (req, res) => {
+  const results = {};
+
+  try {
+    const response = await fetch(
+      "https://auth.opensky-network.org",
+      {
+        signal: AbortSignal.timeout(15000),
+      }
+    );
+
+    results.auth = {
+      reachable: true,
+      status: response.status,
+    };
+  } catch (error) {
+    results.auth = {
+      reachable: false,
+      error: error.message,
+      cause: error.cause?.code ?? null,
+    };
+  }
+
+  try {
+    const response = await fetch(
+      "https://opensky-network.org",
+      {
+        signal: AbortSignal.timeout(15000),
+      }
+    );
+
+    results.api = {
+      reachable: true,
+      status: response.status,
+    };
+  } catch (error) {
+    results.api = {
+      reachable: false,
+      error: error.message,
+      cause: error.cause?.code ?? null,
+    };
+  }
+
+  res.json(results);
+});
+
 app.get("/", (req, res) => {
   res.json({
     message: "Flight Radar API is running",
