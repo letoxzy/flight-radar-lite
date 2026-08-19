@@ -112,7 +112,14 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (error) {
-    console.error("OpenSky error:", error);
+    console.error("OpenSky error:", {
+      name: error?.name,
+      message: error?.message,
+      code: error?.code,
+      cause: error?.cause,
+      causeCode: error?.cause?.code,
+      causeMessage: error?.cause?.message,
+    });
 
     if (cachedData) {
       return res.status(200).json(cachedData);
@@ -120,7 +127,10 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       error: "Unable to connect to OpenSky",
-      details: error.message,
+      details: error?.message,
+      code: error?.code,
+      cause: error?.cause?.message,
+      causeCode: error?.cause?.code,
     });
   }
 }
